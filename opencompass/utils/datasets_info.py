@@ -1,4 +1,14 @@
 DATASETS_MAPPING = {
+    "BYJK/feval_subjective": {
+        "ms_id": None,
+        "hf_id": None,
+        "local": "./data/BYJK/F_Eval/subjective/F_Eval主观题.xlsx",
+    },
+    "BYJK/feval_objective":{
+        "ms_id": None,
+        "hf_id": None,
+        "local": "./data/BYJK/F_Eval/objective/",
+    },
     # ADVGLUE Datasets
     "opencompass/advglue-dev": {
         "ms_id": None,

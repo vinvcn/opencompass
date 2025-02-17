@@ -126,6 +126,10 @@ class OpenAI(BaseAPIModel):
                 if 'OPENAI_API_KEY' not in os.environ:
                     raise ValueError('OpenAI API key is not set.')
                 self.keys = os.getenv('OPENAI_API_KEY').split(',')
+            elif key.startswith("ENV_"):
+                if key not in os.environ:
+                    raise ValueError('OpenAI API key is not set.')
+                self.keys = os.getenv(key).split(',')
             else:
                 self.keys = [key]
         else:
