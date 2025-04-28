@@ -1,4 +1,5 @@
 import csv
+from itertools import islice
 import json
 import os.path as osp
 from os import environ
@@ -15,7 +16,7 @@ from .base import BaseDataset
 class CEvalDataset(BaseDataset):
 
     @staticmethod
-    def load(path: str, name: str, local_mode: bool = False):
+    def load(path: str, name: str, local_mode: bool = False, limit:int=0):
         path = get_data_path(path, local_mode=local_mode)
         dataset = {}
         if environ.get('DATASET_SOURCE') == 'ModelScope':
@@ -27,6 +28,8 @@ class CEvalDataset(BaseDataset):
                 with open(filename, encoding='utf-8') as f:
                     reader = csv.reader(f)
                     header = next(reader)
+                    if split == 'val' and limit > 0:
+                        reader = islice(reader, limit)
                     for row in reader:
                         item = dict(zip(header, row))
                         item.setdefault('explanation', '')

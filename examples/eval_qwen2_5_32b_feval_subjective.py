@@ -25,9 +25,10 @@ with read_base():
     #     arenahard_datasets
     # from opencompass.configs.datasets.subjective.multiround.mtbench_single_judge_diff_temp import \
     #     mtbench_datasets
-    from opencompass.configs.models.qwen.api_alicloud_qwen2_5_32b_chat import models
-    
+    from bobfintech.configs.models.baidu import models
+    # from opencompass.configs.models.qwen.hf_qwen2_0_5b_instruct_cpu import models
     from opencompass.configs.models.deepseek.api_wuwen_deepseek_v3 import models as deepseek_v3_judger
+    # from opencompass.configs.models.qwen.hf_qwen2_0_5b_instruct_cpu import models as deepseek_v3_judger
 
     # Summarizer
     # Model List
@@ -75,10 +76,10 @@ summarizer = dict(type=SubjectiveSummarizer, function='subjective')
 
 # Local Runner
 infer = dict(
-    partitioner=dict(type=NumWorkerPartitioner, num_worker=8),
+    partitioner=dict(type=NumWorkerPartitioner, num_worker=20),
     runner=dict(
         type=LocalRunner,
-        max_num_workers=16,
+        max_num_workers=20,
         retry=0,  # Modify if needed
         task=dict(type=OpenICLInferTask)),
 )

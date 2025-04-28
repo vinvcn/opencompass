@@ -15,10 +15,10 @@ with read_base():
 
 # Local Runner
 infer = dict(
-    partitioner=dict(type=NumWorkerPartitioner, num_worker=20, min_task_size=1),
+    partitioner=dict(type=NumWorkerPartitioner, num_worker=10, min_task_size=1),
     runner=dict(
         type=LocalRunner,
-        max_num_workers=20,
+        max_num_workers=10,
         retry=0,  # Modify if needed
         task=dict(type=OpenICLInferTask),
     ),

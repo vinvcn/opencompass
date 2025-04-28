@@ -56,9 +56,9 @@ for _name in subject_mapping:
 
     feval_subjective_datasets.append(
         dict(
-            abbr=f'{_name}',
+            abbr=f'BYKJ-FEval-主观题-{_name}',
             type=FEvalSubjectiveDataset,
-            limit=1,
+            # limit=1,
             path=data_path,
             name=_name,
             reader_cfg=subjective_reader_cfg,

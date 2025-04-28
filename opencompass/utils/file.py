@@ -12,6 +12,8 @@ def match_files(path: str,
         pattern = [f'*{p}*' for p in pattern]
     files_list = []
     for root, _, files in os.walk(path):
+        print(files)
+        print(root)
         for name in files:
             for p in pattern:
                 if fnmatch.fnmatch(name.lower(), p.lower()):

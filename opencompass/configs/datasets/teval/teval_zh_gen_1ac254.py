@@ -36,7 +36,7 @@ for _name in teval_all_sets:
     teval_eval_cfg = dict(
         evaluator=dict(type=TEvalEvaluator, subset=_name),
         pred_postprocessor=dict(type=teval_postprocess),
-        num_gpus=1,
+        num_gpus=0,
     )
     for subset in teval_subject_mapping[_name]:
         teval_datasets.append(

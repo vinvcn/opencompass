@@ -1,10 +1,10 @@
 
 from opencompass.datasets.feval import FEvalDataset
 from opencompass.openicl.icl_prompt_template import PromptTemplate
-from opencompass.openicl.icl_retriever import FixKRetriever, SlidingWindowRetriever
+from opencompass.openicl.icl_retriever import FixKRetriever, SlidingWindowRetriever, ZeroRetriever
 from opencompass.openicl.icl_inferencer import GenInferencer
 from opencompass.openicl.icl_evaluator import AccEvaluator
-from opencompass.utils.text_postprocessors import first_capital_postprocess
+from opencompass.utils.text_postprocessors import last_option_postprocess_regex
 
 
 
@@ -33,22 +33,23 @@ for _name in feval_subject_mapping.keys():
                 ]),
                 ice_token='</E>'
             ),
-            retriever=dict(type=SlidingWindowRetriever, k=5),
+            # retriever=dict(type=SlidingWindowRetriever, k=5),
+            retriever=dict(type=ZeroRetriever),
             inferencer=dict(type=GenInferencer)
         )
     
     feval_eval_cfg = dict(
         evaluator=dict(type=AccEvaluator),
-        pred_postprocessor=dict(type=first_capital_postprocess))
+        pred_postprocessor=dict(type=last_option_postprocess_regex, options='ABCD'))
 
     
     feval_datasets.append(
         dict(
             type=FEvalDataset,
             path='BYJK/feval_objective',
-            limit=6,
+            # limit=1,
             name=_name,
-            abbr='BYJK-feval-' + _name, 
+            abbr='BYJK-FEval-客观题-' + _name, 
             reader_cfg=dict(
                 input_columns=['question'],
                 output_column='answer'),

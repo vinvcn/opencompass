@@ -55,6 +55,7 @@ for _name in subjective_all_sets:
         dict(
             abbr=f'{_name}',
             type=AlignmentBenchDataset,
+            limit=1,
             path=data_path,
             name=_name,
             alignment_bench_config_path=alignment_bench_config_path,

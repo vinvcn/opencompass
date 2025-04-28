@@ -6,7 +6,7 @@ from typing import List
 
 import jieba
 from fuzzywuzzy import fuzz
-from rouge import Rouge
+# from rouge import Rouge
 
 from opencompass.openicl.icl_evaluator import BaseEvaluator
 from opencompass.registry import ICL_EVALUATORS

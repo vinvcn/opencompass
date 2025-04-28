@@ -9,7 +9,7 @@ from collections import Counter
 from typing import List
 
 import jieba
-from rouge import Rouge
+# from rouge import Rouge
 
 from opencompass.openicl.icl_evaluator import BaseEvaluator
 from opencompass.registry import ICL_EVALUATORS

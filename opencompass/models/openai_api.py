@@ -5,7 +5,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
-from typing import Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import httpx
 import jieba
@@ -30,6 +30,7 @@ O1_MODEL_LIST = [
     'o1-mini-2024-09-12',
     'o1-preview',
     'o1-mini',
+    'ernie-x1-32k-preview'
 ]
 
 
@@ -98,6 +99,9 @@ class OpenAI(BaseAPIModel):
         extra_body: Optional[Dict] = None,
         max_completion_tokens: int = 16384,
         verbose: bool = False,
+        # add post processor 
+        completion_post_processor: Optional[Callable] = None,
+        default_headers: Optional[Dict] = None,
     ):
 
         super().__init__(
@@ -120,6 +124,7 @@ class OpenAI(BaseAPIModel):
         self.tokenizer_path = tokenizer_path
         self.hf_tokenizer = None
         self.extra_body = extra_body
+        self.default_headers = default_headers
 
         if isinstance(key, str):
             if key == 'ENV':
@@ -156,6 +161,7 @@ class OpenAI(BaseAPIModel):
 
         self.path = path
         self.max_completion_tokens = max_completion_tokens
+        self.completion_processor = completion_post_processor
         self.logger.warning(
             f'Max Completion tokens for {path} is {max_completion_tokens}')
 
@@ -196,6 +202,8 @@ class OpenAI(BaseAPIModel):
                     total=len(inputs),
                     desc='Inferencing',
                 ))
+        if self.completion_processor:
+            results = [self.completion_processor(result) for result in results]
         return results
 
     def _generate(self, input: PromptType, max_out_len: int,
@@ -291,6 +299,9 @@ class OpenAI(BaseAPIModel):
                     url = self.url
 
                 if self.proxy_url is None:
+                    self.logger.info(f'Start send query to {url}')
+                    self.logger.info(header)
+                    self.logger.info(data)
                     raw_response = requests.post(url,
                                                  headers=header,
                                                  data=json.dumps(data))
@@ -314,8 +325,11 @@ class OpenAI(BaseAPIModel):
                             f'Get response from {self.proxy_url}')
 
             except requests.ConnectionError:
-                self.logger.error('Got connection error, retrying...')
-                continue
+                import traceback
+                traceback.print_exc()
+                max_num_retries += 1
+                self.logger.error(f'Got connection error, retrying... max_num_retries:{max_num_retries}, self.retry:{self.retry}')
+                return ''
             try:
                 if raw_response.status_code != 200:
                     self.logger.error(f'Request failed with status code '
@@ -562,6 +576,7 @@ class OpenAISDK(OpenAI):
         max_completion_tokens: int = 16384,
         verbose: bool = False,
         status_code_mappings: dict = {},
+        completion_post_processor: Optional[Callable] = None
     ):
         super().__init__(
             path,
@@ -582,6 +597,8 @@ class OpenAISDK(OpenAI):
             extra_body,
             verbose=verbose,
             max_completion_tokens=max_completion_tokens,
+            completion_post_processor=completion_post_processor,
+            
         )
         from openai import OpenAI
 

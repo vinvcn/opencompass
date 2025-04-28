@@ -11,6 +11,7 @@ from typing import Optional
 import numpy as np
 from datasets import Dataset, DatasetDict
 from mmengine import ConfigDict
+from itertools import islice
 
 from opencompass.registry import DICT_POSTPROCESSORS, LOAD_DATASET
 from opencompass.utils import get_data_path
@@ -99,6 +100,7 @@ class AlignmentBenchDataset(SubjectiveCmpDataset):
              name: str,
              alignment_bench_config_path: Optional[str] = '',
              alignment_bench_config_name: Optional[str] = '',
+             limit:int = 0,
              *args,
              **kwargs):
         if alignment_bench_config_path != '':
@@ -106,7 +108,10 @@ class AlignmentBenchDataset(SubjectiveCmpDataset):
                                            alignment_bench_config_name)
         else:
             alignmentbench_config = None
+
         dataset = list(super().load(path, name))
+        if limit > 0:
+            dataset = islice(dataset, limit)
         alignbench_dataset = []
         for data in dataset:
             if alignmentbench_config:
@@ -125,16 +130,20 @@ CATEGORIES = {
     '中文语言': ['基本任务', '中文理解', '综合问答', '文本写作', '角色扮演', '专业能力'],
 }
 
+# All_Dimensions = [
+#     '事实正确性', '满足用户需求', '安全无害', '清晰度', '逻辑性', '完备性', '创造性', '可负责程度', '逻辑连贯性',
+#     '公平与可负责程度', '丰富度', '综合得分'
+# ]
+
 All_Dimensions = [
-    '事实正确性', '满足用户需求', '安全无害', '清晰度', '逻辑性', '完备性', '创造性', '可负责程度', '逻辑连贯性',
-    '公平与可负责程度', '丰富度', '综合得分'
+    '事实正确性', '满足用户需求'
 ]
 
 MAPPING = {
     '事实与解释型回答': ['事实正确性', '满足用户需求', '清晰度', '完备性'],
-    '逻辑推理型回答': ['事实正确性', '满足用户需求', '逻辑连贯性', '完备性'],
-    '生成型回答': ['事实正确性', '满足用户需求', '逻辑连贯性', '创造性', '丰富度'],
-    '建议型回答': ['事实正确性', '满足用户需求', '公平与可负责程度', '创造性']
+    # '逻辑推理型回答': ['事实正确性', '满足用户需求', '逻辑连贯性', '完备性'],
+    # '生成型回答': ['事实正确性', '满足用户需求', '逻辑连贯性', '创造性', '丰富度'],
+    # '建议型回答': ['事实正确性', '满足用户需求', '公平与可负责程度', '创造性']
 }
 
 

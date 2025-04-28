@@ -7,7 +7,7 @@ from opencompass.tasks import OpenICLInferTask
 with read_base():
     # from opencompass.configs.datasets.feval.feval_objective_gen_1 import feval_datasets as datasets
     from opencompass.configs.datasets.FinanceIQ.FinanceIQ_gen import financeIQ_datasets as datasets
-    from bobfintech.configs.models.baidu import models
+    from bobfintech.configs.models.baidu_extra import models
 
 
 # for d in datasets:
