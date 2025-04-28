@@ -308,6 +308,7 @@ class OpenAI(BaseAPIModel):
                         headers=header,
                         data=json.dumps(data),
                         proxies=proxies,
+                        timeout=300
                     )
 
                     if self.verbose:
@@ -319,7 +320,7 @@ class OpenAI(BaseAPIModel):
                 traceback.print_exc()
                 max_num_retries += 1
                 self.logger.error(f'Got connection error, retrying... max_num_retries:{max_num_retries}, self.retry:{self.retry}')
-                return ''
+                # return ''
             try:
                 if raw_response.status_code != 200:
                     self.logger.error(f'Request failed with status code '
